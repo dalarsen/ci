@@ -1,7 +1,7 @@
 name: CI - Build and Test
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       apt-cache-version:
         required: false
@@ -36,9 +36,9 @@ on:
         default: 3.6.13
 
 jobs:
-  set_variables:
+  set-version-identifiers:
+    name: Set Version Identifiers
     runs-on: ubuntu-latest
-
     steps:
       - name: Set Python Version Short
         run: echo "PY_VERSION_SHORT=$(echo '${{ inputs.python-version }}' | grep -Eo '[0-9]+.[0-9]+')" >> $GITHUB_OUTPUT
