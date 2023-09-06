@@ -30,8 +30,20 @@ on:
         required: false
         type: boolean
         default: true
+      python-version:
+        required: false
+        type: string
+        default: 3.6.13
 
 jobs:
+  set_variables:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set Python Version Short
+        run: echo "PY_VERSION_SHORT=$(echo '${{ inputs.python-version }}' | grep -Eo '[0-9]+.[0-9]+')" >> $GITHUB_OUTPUT
+        id: py_version_short
+
   build_and_test:
     runs-on: ubuntu-20.04
     # When parent workflow is named "Build and Test" this shows up as:
@@ -40,9 +52,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - python-version-short: "3.6"
-            python-version: 3.6.13
+          - python-version-short: ${{ steps.py_version_short.outputs.PY_VERSION_SHORT }}
+            python-version: ${{ inputs.python-version }}
     steps:
+      - name: set
       - name: Checkout Pack Repo and CI Repos
         uses: StackStorm-Exchange/ci/.github/actions/checkout@master
         with:
